@@ -30,8 +30,6 @@ export default (request) => {
         location: searchParam,
     };
 
-    // apiUrl += '/' + searchParam + '.json';
-
     let url = apiUrl + '?' + query.stringify(queryParams);
     console.log(url);
 

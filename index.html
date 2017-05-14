@@ -1,0 +1,128 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <style>
+            h4 {
+              margin-top: 25px;
+            }
+            .row {
+              margin-bottom: 20px;
+            }
+            .row .row {
+              margin-top: 10px;
+              margin-bottom: 0;
+            }
+            [class*="col-"] {
+              padding-top: 15px;
+              padding-bottom: 15px;
+              background-color: #eee;
+              background-color: rgba(86,61,124,.15);
+              border: 1px solid #ddd;
+              border: 1px solid rgba(86,61,124,.2);
+            }
+
+            hr {
+              margin-top: 40px;
+              margin-bottom: 40px;
+            }
+
+            .heightened-btn {
+                min-height: 75px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+
+          <div class="page-header">
+            <h1>disruptny</h1>
+            <p class="lead">We're not life-alert.</p>
+          </div>
+
+          <div class="row">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default heightened-btn alcohol-btn">
+                    <h1>Alcohol</h1>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default heightened-btn drugs-btn">
+                    <h1>Drugs</h1>
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+        </div> <!-- /container -->
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.8.0.js"></script>
+
+        <script>
+            CHANNEL = "mapquest_channel";
+            LAT = 40.709847;
+            LNG = -73.986318;
+
+            // Get current location 
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position){
+                        LAT = position.coords.latitude;
+                        LNG = position.coords.longitude;
+                        console.log("Current location: " + LAT + ", " + LNG);
+                });
+            }
+
+            function publish() {
+               
+                pubnub = new PubNub({
+                    publishKey : 'pub-c-c03226af-2644-4bae-8a63-b34a6ce4e323',
+                    subscribeKey : 'sub-c-1ce8260e-3828-11e7-9843-0619f8945a4f'
+                })
+                   
+                function publishSampleMessage() {
+                    console.log("Since we're publishing on subscribe connectEvent, we're sure we'll receive the following publish.");
+                    var publishConfig = {
+                        channel : CHANNEL,
+                        message : {
+                            targets: ["17325134403", "15164264399"],
+                            location: LAT + ", " + LNG
+                        }
+                    }
+                    pubnub.publish(publishConfig, function(status, response) {
+                        console.log(status, response);
+                    })
+                }
+                   
+                pubnub.addListener({
+                    status: function(statusEvent) {
+                        if (statusEvent.category === "PNConnectedCategory") {
+                            publishSampleMessage();
+                        }
+                    },
+                    message: function(message) {
+                        console.log("New Message!!", message);
+                    },
+                    presence: function(presenceEvent) {
+                        // handle presence
+                    }
+                })      
+                console.log("Subscribing..");
+                pubnub.subscribe({
+                    channels: [CHANNEL] 
+                });
+            };
+
+            $(".alcohol-btn").click(function(){
+                publish();
+            });
+        </script>
+    </body>
+</html>

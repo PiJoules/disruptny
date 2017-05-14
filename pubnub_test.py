@@ -5,16 +5,22 @@ from pubnub.pubnub import PubNub
 
 import json
 
-#CHANNEL = "mapquest_channel"
+CHANNEL = "mapquest_channel"
+test_msg = {
+    "location": "40.709762, -73.986275",
+    "targets": ["17325134403", "15164264399"],
+}
+
+#CHANNEL = "neximo_channel"
 #test_msg = {
-#    "location": "40.709762, -73.986275",
+#    "targets": ["17325134403", "15164264399"],
+#    "text": "Test msg lol send from script",
 #}
 
-CHANNEL = "neximo_channel"
-test_msg = {
-    "targets": ["17325134403", "15164264399"],
-    "text": "Test msg lol send from script",
-}
+#CHANNEL = "test"
+#test_msg = {
+#    "text": "some msg"
+#}
 
 pnconfig = PNConfiguration()
 
